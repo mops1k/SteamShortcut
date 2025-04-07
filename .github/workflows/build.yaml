@@ -35,8 +35,9 @@ jobs:
           fi
           echo "MajorVer=$majorVer LastVer=$lastVer NextVer=$nextVer"
           echo "RELEASE_VERSION=$nextVer" >> $GITHUB_ENV
-      - name: Build Release
-        run: dotnet build --configuration Release --output "${{ env.RELEASE_NAME }}-${{ env.RELEASE_VERSION }}/" "/p:AssemblyVersion=${{ env.RELEASE_VERSION }}" "/p:Version=${{ env.RELEASE_VERSION }}" "/p:VersionSuffix=" "/p:ExtraDefineConstants=PRODUCTION_BUILD" ${{ env.RELEASE_NAME }}/${{ env.RELEASE_NAME }}.csproj
+      - name: Build Single File Release
+        run: dotnet publish ${{ env.RELEASE_NAME }}/${{ env.RELEASE_NAME }}.csproj -p:PublishSingleFile=true --self-contained false --output "${{ env.RELEASE_NAME }}-${{ env.RELEASE_VERSION }}/" "/p:AssemblyVersion=${{ env.RELEASE_VERSION }}" "/p:Version=${{ env.RELEASE_VERSION }}" "/p:VersionSuffix=" "/p:ExtraDefineConstants=PRODUCTION_BUILD" -p:DebugType=None -p:DebugSymbols=false
+#        run: dotnet build --configuration Release --output "${{ env.RELEASE_NAME }}-${{ env.RELEASE_VERSION }}/" "/p:AssemblyVersion=${{ env.RELEASE_VERSION }}" "/p:Version=${{ env.RELEASE_VERSION }}" "/p:VersionSuffix=" "/p:ExtraDefineConstants=PRODUCTION_BUILD"
       - name: Test
         run: dotnet test --no-restore --verbosity normal
       - uses: vimtor/action-zip@v1

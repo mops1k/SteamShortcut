@@ -8,6 +8,8 @@
     <Nullable>enable</Nullable>
     <ApplicationIcon>Resources\steam.ico</ApplicationIcon>
     <RuntimeIdentifiers>win-x64</RuntimeIdentifiers>
+    <PublishRepositoryUrl>false</PublishRepositoryUrl>
+    <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
   </PropertyGroup>
 
   <ItemGroup>

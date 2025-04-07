@@ -6,16 +6,16 @@ namespace SteamShortcut.Service;
 public class ShortcutContextMenu(ILogger? logger = null)
 {
     private ILogger _logger => logger ?? new Logger.Logger("SteamShortcut", "SteamShortcut");
-    private WindowsContextMenu.WindowsContextMenu WinContextMenu => new WindowsContextMenu.WindowsContextMenu(_logger);
+    private WindowsContextMenu.WindowsContextMenu WinContextMenu => new(_logger);
     private readonly string _menuName = Localization.ContextMenu_Name;
 
     private string? ExeFullPath
     {
         get
         {
-            var exePath = Assembly.GetEntryAssembly()?.Location;
+            string exePath = AppContext.BaseDirectory;
 
-            return exePath == null ? null : Path.Combine(Path.GetDirectoryName(exePath) ?? ".", "SteamShortcut.exe");
+            return Path.Combine(Path.GetDirectoryName(exePath) ?? ".", "SteamShortcut.exe");
         }
     }
 
