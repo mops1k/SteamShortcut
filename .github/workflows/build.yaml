@@ -20,37 +20,43 @@ jobs:
           dotnet-version: ${{ env.DOTNET_VERSION }}
       - name: Install dependencies
         run: dotnet restore
-      - name: Set RELEASE_VERSION
+      - name: Set valid RELEASE_VERSION
         shell: bash
         run: |
-          majorVer=$(cat VERSION | tr -d '[:space:]')  # Удаляем все пробелы из VERSION
-          lastVer=$(git tag --sort version:refname --list "$majorVer.*" | tail -n1 | xargs)  # xargs для trim
+          # Получаем базовую версию из файла (с очисткой)
+          majorVer=$(cat VERSION | sed 's/[^0-9.]//g' | awk -F. '{print $1"."$2}')
+
+          # Ищем последний тег и инкрементим патч-версию
+          lastVer=$(git tag --sort=-v:refname --list "$majorVer.*" | head -n1 || echo "")
 
           if [[ -n "$lastVer" ]]; then
-            IFS='.' read -ra verParts <<< "$lastVer"
-            newPatch=$((verParts[2] + 1))
-            nextVer="${verParts[0]}.${verParts[1]}.$newPatch"
+            IFS='.' read -ra parts <<< "$lastVer"
+            nextPatch=$((parts[2] + 1))
+            nextVer="${parts[0]}.${parts[1]}.$nextPatch"
           else
             nextVer="${majorVer}.0"
           fi
 
-          # Финалная очистка версии
-          nextVer=$(echo "$nextVer" | tr -d '[:space:]')
-          echo "MajorVer=$majorVer LastVer=$lastVer NextVer=$nextVer"
-          echo "RELEASE_VERSION=${nextVer}" >> $GITHUB_ENV
-      - name: Build Single File Release
-        shell: pwsh
+          # Проверяем валидность версии
+          if [[ ! "$nextVer" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
+            echo "::error::Invalid version format: $nextVer"
+            exit 1
+          fi
+
+          echo "RELEASE_VERSION=$nextVer" >> $GITHUB_ENV
+          echo "Using version: $nextVer"
+      - name: Build Release
+        shell: bash
         run: |
-          $RELEASE_VERSION = "${{ env.RELEASE_VERSION }}".Trim()
-          dotnet publish ${{ env.RELEASE_NAME }}/${{ env.RELEASE_NAME }}.csproj `
-            -p:PublishSingleFile=true `
-            --self-contained false `
-            --output "${{ env.RELEASE_NAME }}-$RELEASE_VERSION/" `
-            "/p:AssemblyVersion=$RELEASE_VERSION" `
-            "/p:Version=$RELEASE_VERSION" `
-            "/p:VersionSuffix=" `
-            "/p:ExtraDefineConstants=PRODUCTION_BUILD" `
-            -p:DebugType=None `
+          dotnet publish ${{ env.RELEASE_NAME }}/${{ env.RELEASE_NAME }}.csproj \
+            -c Release \
+            -p:PublishSingleFile=true \
+            --self-contained false \
+            --output "${{ env.RELEASE_NAME }}-${{ env.RELEASE_VERSION }}/" \
+            "/p:AssemblyVersion=${{ env.RELEASE_VERSION }}" \
+            "/p:FileVersion=${{ env.RELEASE_VERSION }}" \
+            "/p:Version=${{ env.RELEASE_VERSION }}" \
+            -p:DebugType=None \
             -p:DebugSymbols=false
       - name: Test
         run: dotnet test --no-restore --verbosity normal
