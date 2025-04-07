@@ -10,13 +10,13 @@ namespace VDFMapper.VDF
             Text = stream.ReadString();
         }
 
-        public VDFString(string text)
+        public VDFString(string? text)
         {
             Type = VDFType.String;
             Text = text;
         }
 
-        public override void Write(BinaryWriter writer, string key)
+        public override void Write(BinaryWriter writer, string? key)
         {
             writer.Write((byte)Type);
             writer.Write(Encoding.UTF8.GetBytes(key));

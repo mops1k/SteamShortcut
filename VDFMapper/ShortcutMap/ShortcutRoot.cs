@@ -14,9 +14,10 @@ namespace VDFMapper.ShortcutMap
 
         public int GetSize() => GetShortcutMap().GetSize();
 
-        public ShortcutEntry GetEntry(int entry) => new ShortcutEntry(GetShortcutMap().ToMap().GetValue(entry.ToString()).ToMap());
+        public ShortcutEntry? GetEntry(int entry) =>
+            new ShortcutEntry(GetShortcutMap().ToMap().GetValue(entry.ToString()).ToMap());
 
-        public ShortcutEntry AddEntry()
+        public ShortcutEntry? AddEntry()
         {
             VDFMap entry = new VDFMap();
             entry.FillWithDefaultShortcutEntry();

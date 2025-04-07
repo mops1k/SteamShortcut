@@ -13,7 +13,7 @@ namespace VDFMapper.VDF
 
         public void Close() => reader.Close();
 
-        public string ReadString()
+        public string? ReadString()
         {
             List<byte> text = new();
             while (true)

@@ -1,35 +1,68 @@
 ﻿using Logger;
-using System.Windows.Forms;
+using Microsoft.Extensions.DependencyInjection;
+using SteamShortcut.Controller;
+using SteamShortcut.Form;
+using SteamShortcut.Service;
 
 namespace SteamShortcut
 {
-    internal class Program
+    internal static class Program
     {
-        
-        private static ILogger _logger => new Logger.Logger("SteamShortcut", "SteamShortcut");
-        private static ShortcutContextMenu ShortcutContextMenu => new ShortcutContextMenu(_logger);
         internal static void Main(string[] args)
         {
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
 
-            if (args.Length < 1)
+            var container = Services();
+            var shortcutContextMenu = container.GetRequiredService<ShortcutContextMenu>();
+            var logger = container.GetRequiredService<ILogger>();
+            logger.Info("Starting Steam Shortcut application");
+
+            if (args.Length == 0 && !shortcutContextMenu.IsExists())
             {
-                Application.EnableVisualStyles();
-                Application.SetCompatibleTextRenderingDefault(false);
-
-                if (!ShortcutContextMenu.IsExists()) {
-                    // @todo ask question to add
-                    var result = MessageBox.Show("Add Windows context menu item to executable files?", "Confirm", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-                    if (result == DialogResult.Yes) {
-                        Console.WriteLine("Install");
-
-                        return;
-                    }
-                    Console.WriteLine("Nope");
-                }
-                return;
+                Array.Resize(ref args, 1);
+                args[0] = "--install";
             }
 
-            Console.WriteLine("hi");
+            if (args.Length == 0 && shortcutContextMenu.IsExists())
+            {
+                Array.Resize(ref args, 1);
+                args[0] = "--uninstall";
+            }
+
+            IController? controller;
+            switch (args[0])
+            {
+                case "--install":
+                case "-i":
+                    controller = container.GetRequiredService<AddContextMenuItemController>();
+                    break;
+                case "--uninstall":
+                case "-u":
+                    controller = container.GetRequiredService<RemoveContextMenuItemController>();
+                    break;
+                default:
+                    controller = container.GetRequiredService<ShortcutController>();
+                    break;
+            }
+
+            controller.Invoke(args[0]);
+        }
+
+        private static ServiceProvider Services()
+        {
+            IServiceCollection services = new ServiceCollection();
+            services.AddSingleton<ILogger>(
+                static _ => new Logger.Logger("SteamShortcut", "SteamShortcut")
+            );
+            services.AddSingleton<ShortcutContextMenu>();
+            services.AddTransient<SteamUserDialog>();
+            services.AddTransient<Service.SteamShortcut>();
+            services.AddSingleton<AddContextMenuItemController>();
+            services.AddSingleton<RemoveContextMenuItemController>();
+            services.AddSingleton<ShortcutController>();
+
+            return services.BuildServiceProvider();
         }
     }
 }

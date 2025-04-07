@@ -10,7 +10,7 @@ namespace VDFMapper.VDF
             Integer = stream.ReadInteger();
         }
 
-        public override void Write(BinaryWriter writer, string key)
+        public override void Write(BinaryWriter writer, string? key)
         {
             writer.Write((byte)Type);
             writer.Write(Encoding.UTF8.GetBytes(key));

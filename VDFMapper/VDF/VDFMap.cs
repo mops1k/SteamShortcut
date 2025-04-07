@@ -9,7 +9,7 @@ namespace VDFMapper.VDF
         public VDFMap(VDFStream stream)
         {
             Type = VDFType.MapStart;
-            Map = new Dictionary<string, VDFBaseType>();
+            Map = new Dictionary<string?, VDFBaseType>();
 
             while (true)
             {
@@ -18,7 +18,7 @@ namespace VDFMapper.VDF
                 if (op == (byte)VDFType.MapEnd)
                     break;
 
-                string key = stream.ReadString();
+                string? key = stream.ReadString();
 
                 VDFBaseType value;
                 if (op == (byte)VDFType.MapStart)
@@ -37,7 +37,7 @@ namespace VDFMapper.VDF
         public VDFMap()
         {
             Type = VDFType.MapStart;
-            Map = new Dictionary<string, VDFBaseType>();
+            Map = new Dictionary<string?, VDFBaseType>();
         }
 
         public void FillWithDefaultShortcutEntry()
@@ -64,10 +64,10 @@ namespace VDFMapper.VDF
         {
             Map.Remove(idx.ToString());
 
-            Dictionary<string, VDFBaseType> newMap = new Dictionary<string, VDFBaseType>();
+            Dictionary<string?, VDFBaseType> newMap = new Dictionary<string?, VDFBaseType>();
 
             int i = 0;
-            foreach (KeyValuePair<string, VDFBaseType> kv in Map)
+            foreach (KeyValuePair<string?, VDFBaseType> kv in Map)
             {
                 newMap.Add(i.ToString(), kv.Value);
                 i++;
@@ -76,7 +76,7 @@ namespace VDFMapper.VDF
             Map = newMap;
         }
 
-        public override void Write(BinaryWriter writer, string key)
+        public override void Write(BinaryWriter writer, string? key)
         {
             if (key != null)
             {
@@ -84,8 +84,8 @@ namespace VDFMapper.VDF
                 writer.Write(Encoding.UTF8.GetBytes(key));
                 writer.Write((byte)0);
             }
-            
-            foreach (KeyValuePair<String, VDFBaseType> keyValue in Map)
+
+            foreach (KeyValuePair<string?, VDFBaseType> keyValue in Map)
             {
                 keyValue.Value.Write(writer, keyValue.Key);
             }
@@ -93,12 +93,12 @@ namespace VDFMapper.VDF
             writer.Write((byte)VDFType.MapEnd);
         }
 
-        public VDFBaseType GetValue(string key)
+        public VDFBaseType GetValue(string? key)
         {
             if (Map.ContainsKey(key))
                 return Map[key];
 
-            string temp = char.ToUpper(key[0]) + key.Substring(1);
+            string? temp = char.ToUpper(key[0]) + key.Substring(1);
 
             if (Map.ContainsKey(temp))
                 return Map[temp];

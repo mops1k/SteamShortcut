@@ -1,0 +1,57 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<root>
+    <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+        <xsd:element name="root" msdata:IsDataSet="true">
+            
+        </xsd:element>
+    </xsd:schema>
+    <resheader name="resmimetype">
+        <value>text/microsoft-resx</value>
+    </resheader>
+    <resheader name="version">
+        <value>1.3</value>
+    </resheader>
+    <resheader name="reader">
+        <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <resheader name="writer">
+        <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    </resheader>
+    <data name="SteamUserDialog_Show_Select_Steam_user" xml:space="preserve">
+        <value>Select Steam user</value>
+    </data>
+    <data name="SteamUserDialog_Show_User" xml:space="preserve">
+        <value>User</value>
+    </data>
+    <data name="ContextMenu_AddQuestion" xml:space="preserve">
+        <value>Add Windows context menu item to executable files?</value>
+    </data>
+    <data name="MessageBox_Confirm" xml:space="preserve">
+        <value>Confirm</value>
+    </data>
+    <data name="ContextMenu_RemoveQuestion" xml:space="preserve">
+        <value>Remove Windows context menu item?</value>
+    </data>
+    <data name="ContextMenu_Name" xml:space="preserve">
+        <value>Add to Steam</value>
+    </data>
+    <data name="SteamUserDialog_UnknownUser" xml:space="preserve">
+        <value>unknown</value>
+    </data>
+    <data name="VDF_ReadError" xml:space="preserve">
+        <value>Failed to read shortcuts.vdf. Does a shortcuts.vdf file exist? Try to add a non-steam game to steam first</value>
+    </data>
+    <data name="SteamShortcut_Add_Steam_Shortcut_Error" xml:space="preserve">
+        <value>Steam Shortcut Error</value>
+    </data>
+    <data name="VDF_AddExecutableError" xml:space="preserve">
+        <value>Failed to add executable</value>
+    </data>
+    <data name="VDF_WriteError" xml:space="preserve">
+        <value>Failed to write shortcuts.vdf</value>
+    </data>
+    <data name="SteamShortcut_PathsNotInitialized" xml:space="preserve">
+        <value>Can't find steam paths. Is Steam installed?</value>
+    </data>
+</root>
