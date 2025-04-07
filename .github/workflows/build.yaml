@@ -23,7 +23,6 @@ jobs:
       - name: Set initial RELEASE_VERSION
         shell: bash
         run: |
-          # Если файл VERSION содержит "0.1" (без лишних пробелов)
           majorMinor=$(cat VERSION | tr -d '[:space:]')
 
           if [ -z "$(git tag --list)" ]; then
@@ -54,26 +53,7 @@ jobs:
         shell: pwsh
         run: |
           $version = "${{ env.RELEASE_VERSION }}".Trim()
-          echo dotnet publish SteamShortcut/SteamShortcut.csproj `
-            -c Release `
-            -p:PublishSingleFile=true `
-            --self-contained false `
-            --output "${{ env.RELEASE_NAME }}-$version/" `
-            -p:AssemblyVersion=$version `
-            -p:FileVersion=$version `
-            -p:Version=$version `
-            -p:DebugType=None `
-            -p:DebugSymbols=false
-          dotnet publish SteamShortcut/SteamShortcut.csproj `
-            -c Release `
-            -p:PublishSingleFile=true `
-            --self-contained false `
-            --output "${{ env.RELEASE_NAME }}-$version/" `
-            -p:AssemblyVersion=$version `
-            -p:FileVersion=$version `
-            -p:Version=$version `
-            -p:DebugType=None `
-            -p:DebugSymbols=false
+          dotnet publish SteamShortcut/SteamShortcut.csproj -p:PublishSingleFile=true --self-contained false --output "${{ env.RELEASE_NAME }}-$version/" "/p:AssemblyVersion=$version" "/p:Version=$version" "/p:VersionSuffix=" "/p:ExtraDefineConstants=PRODUCTION_BUILD" -p:DebugType=None -p:DebugSymbols=false
       - name: Test
         run: dotnet test --no-restore --verbosity normal
       - uses: vimtor/action-zip@v1
