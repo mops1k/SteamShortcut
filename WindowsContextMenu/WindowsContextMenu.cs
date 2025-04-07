@@ -6,7 +6,7 @@ namespace WindowsContextMenu
 {
     public class WindowsContextMenu(ILogger? logger = null)
     {
-        private ILogger _logger => logger ?? new Logger.Logger("WindowsContextMenu");
+        private ILogger _logger => logger ?? new Logger.Logger("WindowsContextMenu", "WindowsContextMenu");
 
         /// <summary>
         /// Checks if a context menu item with the specified name exists for the given file extension.

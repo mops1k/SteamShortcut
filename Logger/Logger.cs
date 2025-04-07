@@ -11,12 +11,12 @@ namespace Logger
     {
         private readonly ILog _logger;
 
-        public Logger(string applicationName)
+        public Logger(string applicationName, string baseDirectoryName)
         {
             _logger = LogManager.GetLogger(applicationName);
 
             var documentsFolder = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-            var logsFolder = Path.Combine(documentsFolder, "SteamDeckTools", "Logs");
+            var logsFolder = Path.Combine(documentsFolder, baseDirectoryName, "Logs");
 
             BasicConfigurator.Configure();
             var hierarchy = (Hierarchy)LogManager.GetRepository();

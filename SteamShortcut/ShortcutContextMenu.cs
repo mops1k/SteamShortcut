@@ -5,7 +5,7 @@ namespace SteamShortcut;
 
 public class ShortcutContextMenu(ILogger? logger = null)
 {
-    private ILogger _logger => logger ?? new Logger.Logger("SteamShortcut");
+    private ILogger _logger => logger ?? new Logger.Logger("SteamShortcut", "SteamShortcut");
     private WindowsContextMenu.WindowsContextMenu WinContextMenu => new WindowsContextMenu.WindowsContextMenu(_logger);
     private string MenuName = "Add to Steam";
     private string? ExeFullPath

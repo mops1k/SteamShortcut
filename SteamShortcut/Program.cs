@@ -5,7 +5,7 @@ namespace SteamShortcut
     internal class Program
     {
         
-        private static ILogger _logger => new Logger.Logger("SteamShortcut");
+        private static ILogger _logger => new Logger.Logger("SteamShortcut", "SteamShortcut");
         private static ShortcutContextMenu ShortcutContextMenu => new ShortcutContextMenu(_logger);
         internal static void Main(string[] args)
         {
