@@ -49,10 +49,15 @@ jobs:
             echo "::error::RELEASE_VERSION is empty"
             exit 1
           fi
+      - name: Normalize version
+        shell: bash
+        run: |
+          clean_version=$(echo "${{ env.RELEASE_VERSION }}" | tr -d '[:space:]')
+          echo "RELEASE_VERSION=${clean_version}" >> $GITHUB_ENV
       - name: Build Release
         shell: pwsh
         run: |
-          $version = "${{ env.RELEASE_VERSION }}".Trim()
+          $version = "${{ env.RELEASE_VERSION }}"
           dotnet publish SteamShortcut/SteamShortcut.csproj -p:PublishSingleFile=true --self-contained false --output "${{ env.RELEASE_NAME }}-$version/" "/p:AssemblyVersion=$version" "/p:Version=$version" "/p:VersionSuffix=" "/p:ExtraDefineConstants=PRODUCTION_BUILD" -p:DebugType=None -p:DebugSymbols=false
       - name: Test
         run: dotnet test --no-restore --verbosity normal
