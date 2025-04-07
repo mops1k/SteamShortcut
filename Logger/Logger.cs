@@ -80,7 +80,7 @@ namespace Logger
             _logger.Fatal(message, e);
         }
 
-        public void Fatal(string type, Exception e)
+        public void Fatal(string type, Exception? e)
         {
             var message = $"{type}: Exception: {e.Message}";
             _logger.Fatal(message, e);

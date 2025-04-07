@@ -14,6 +14,9 @@ namespace SteamShortcut
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
+            Application.ThreadException += LogUnhandledExceptions;
+            Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException);
+            AppDomain.CurrentDomain.UnhandledException += LogUnhandledExceptions;
 
             SuggestAction(ref args);
 
@@ -63,6 +66,18 @@ namespace SteamShortcut
 
             Array.Resize(ref args, 1);
             args[0] = "--uninstall";
+        }
+
+        private static void LogUnhandledExceptions(object sender, ThreadExceptionEventArgs e)
+        {
+            Container.GetRequiredService<ILogger>().Fatal("Unhandled exception", e.Exception);
+            MessageBox.Show(e.Exception.Message, "Fatal Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        }
+
+        private static void LogUnhandledExceptions(object sender, UnhandledExceptionEventArgs e)
+        {
+            Container.GetRequiredService<ILogger>().Fatal("Unhandled exception", e.ExceptionObject as Exception);
+            MessageBox.Show((e.ExceptionObject as Exception)?.Message, "Fatal Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
     }
 }

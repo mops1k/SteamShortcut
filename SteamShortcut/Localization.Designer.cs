@@ -96,6 +96,15 @@ namespace SteamShortcut {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Failed to restart Steam process.
+        /// </summary>
+        internal static string ShortcutController_Invoke_Failed_to_restart_Steam_process {
+            get {
+                return ResourceManager.GetString("ShortcutController_Invoke_Failed_to_restart_Steam_process", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Steam Shortcut Error.
         /// </summary>
         internal static string SteamShortcut_Add_Steam_Shortcut_Error {

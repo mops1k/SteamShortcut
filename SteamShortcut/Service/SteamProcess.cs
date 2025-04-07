@@ -21,10 +21,10 @@ namespace SteamShortcut.Service
             }
         }
 
-        public bool IsInstalled => _steamPath != null;
+        private bool IsInstalled => _steamPath != null;
         public bool IsRunning => IsInstalled && FindSteamProcess() != null;
 
-        public bool Start()
+        private bool Start()
         {
             if (IsRunning)
             {
@@ -38,7 +38,7 @@ namespace SteamShortcut.Service
             return process.Start();
         }
 
-        public bool Stop()
+        private bool Stop()
         {
             if (!IsRunning)
             {
@@ -70,7 +70,7 @@ namespace SteamShortcut.Service
         private Process? FindSteamProcess()
         {
             return Process
-                .GetProcesses()
+                .GetProcessesByName("steam")
                 .FirstOrDefault(p => p.MainModule?.FileName == _steamPath);
         }
     }

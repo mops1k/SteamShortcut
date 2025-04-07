@@ -60,4 +60,7 @@
   <data name="SteamShortcut_RestartSteamCaption" xml:space="preserve">
     <value>Требуется перезапуск Steam</value>
   </data>
+  <data name="ShortcutController_Invoke_Failed_to_restart_Steam_process" xml:space="preserve">
+    <value>Не удалось перезапустить Steam. Перезапустите вручную.</value>
+  </data>
 </root>

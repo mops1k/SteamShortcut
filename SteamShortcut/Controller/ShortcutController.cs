@@ -12,6 +12,12 @@ namespace SteamShortcut.Controller
                 return;
             }
 
+            if (!Path.Exists(exePath))
+            {
+                logger.Error($"Cannot find executable path: {exePath}");
+                return;
+            }
+
             if (!steamShortcut.InitialisePaths())
             {
                 return;
@@ -39,7 +45,11 @@ namespace SteamShortcut.Controller
                 return;
             }
 
-            steamProcess.Restart();
+            if (!steamProcess.Restart())
+            {
+                logger.Error($"Failed to restart Steam process: {exePath}");
+                MessageBox.Show(Localization.ShortcutController_Invoke_Failed_to_restart_Steam_process, Localization.SteamShortcut_RestartSteamCaption, MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
     }
 }

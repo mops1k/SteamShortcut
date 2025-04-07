@@ -23,7 +23,7 @@ namespace WindowsContextMenu
                     return subKey != null;
                 }
             }
-            catch (Exception ex)
+            catch (Exception? ex)
             {
                 Logger.Fatal("Error checking context menu existence.", ex);
             }
@@ -55,7 +55,7 @@ namespace WindowsContextMenu
                     {
                         key = Registry.CurrentUser.CreateSubKey($@"Software\Classes\{fileExtension}\shell");
                     }
-                    catch (Exception e)
+                    catch (Exception? e)
                     {
                         Logger.Fatal(e.Message, e);
                         return;
@@ -70,7 +70,7 @@ namespace WindowsContextMenu
 
                 Logger.Info($"Context menu item '{menuName}' for extension '{fileExtension}' added successfully.");
             }
-            catch (Exception ex)
+            catch (Exception? ex)
             {
                 Logger.Fatal("Error adding context menu item.", ex);
             }
@@ -99,7 +99,7 @@ namespace WindowsContextMenu
                 key.DeleteSubKeyTree(menuName);
                 Logger.Info($"Context menu item '{menuName}' for extension '{fileExtension}' removed successfully.");
             }
-            catch (Exception ex)
+            catch (Exception? ex)
             {
                 Logger.Fatal("Error removing context menu item.", ex);
             }

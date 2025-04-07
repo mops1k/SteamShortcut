@@ -107,7 +107,7 @@ public class SteamShortcut(ILogger logger, SteamUserDialog userDialog)
 
             return true;
         }
-        catch (Exception e)
+        catch (Exception? e)
         {
             Logger.Fatal("Write shortcut to Steam library error!", e);
 
