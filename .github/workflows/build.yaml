@@ -1,0 +1,57 @@
+﻿on:
+  workflow_dispatch:
+
+env:
+  RELEASE_NAME: SteamShortcut
+  DOTNET_VERSION: '9.0.x'
+
+jobs:
+  build-and-release:
+    runs-on: windows-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+      - name: Install dependencies
+        run: dotnet restore
+      - name: Set RELEASE_VERSION
+        shell: bash
+        run: |
+          majorVer=$(cat VERSION)
+          lastVer=$(git tag --sort version:refname --list "$majorVer.*" | tail -n1)
+          if [[ -n "$lastVer" ]]; then
+            newVer=(${lastVer//./ })
+            newVer[-1]="$((${newVer[-1]}+1))"
+            nextVer="${newVer[*]}"
+            nextVer="${nextVer// /.}"
+          else
+            nextVer="$majorVer.0"
+          fi
+          echo "MajorVer=$majorVer LastVer=$lastVer NextVer=$nextVer"
+          echo "RELEASE_VERSION=$nextVer" >> $GITHUB_ENV
+      - name: Build Release
+        run: dotnet build ${{ env.RELEASE_NAME }}/${{ env.RELEASE_NAME }}.csproj --configuration Release --output "${{ env.RELEASE_NAME }}-${{ env.RELEASE_VERSION }}/" "/p:AssemblyVersion=${{ env.RELEASE_VERSION }}" "/p:Version=${{ env.RELEASE_VERSION }}" "/p:VersionSuffix=" "/p:ExtraDefineConstants=PRODUCTION_BUILD"
+      - name: Test
+        run: dotnet test --no-restore --verbosity normal
+      - uses: vimtor/action-zip@v1
+        with:
+          files: ${{ env.RELEASE_NAME }}-${{ env.RELEASE_VERSION }}
+          dest: ${{ env.RELEASE_NAME }}-${{ env.RELEASE_VERSION }}-portable.zip
+          recursive: true
+      - name: Update version in RELEASE.md
+        shell: bash
+        run: |
+          sed -i 's|#{GIT_TAG_NAME}|${{ env.RELEASE_VERSION }}|g' RELEASE.md
+      - uses: ncipollo/release-action@v1
+        with:
+          tag: ${{ env.RELEASE_VERSION }}
+          artifacts: "*.zip"
+          prerelease: true
+          generateReleaseNotes: true
+          bodyFile: RELEASE.md
