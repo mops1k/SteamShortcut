@@ -16,13 +16,13 @@ public class SteamShortcut(ILogger logger, SteamUserDialog userDialog)
 
     public bool InitialisePaths()
     {
-        var path = SteamShortcutPath.GetUserDataPath();
+        string? path = SteamShortcutPath.GetUserDataPath();
         if (string.IsNullOrEmpty(path))
         {
             return false;
         }
 
-        var userId = SteamShortcutPath.GetUserId();
+        int? userId = SteamShortcutPath.GetUserId();
         if (SteamShortcutPath.GetUserId() == null)
         {
             var users = GetUsers(path);
@@ -98,12 +98,21 @@ public class SteamShortcut(ILogger logger, SteamUserDialog userDialog)
 
     private bool Write()
     {
-        File.WriteAllText(_vdfPath, "");
-        var writer = new BinaryWriter(new FileStream(_vdfPath, FileMode.OpenOrCreate));
-        _root!.Write(writer, null);
-        writer.Close();
+        try
+        {
+            File.WriteAllText(_vdfPath, "");
+            var writer = new BinaryWriter(new FileStream(_vdfPath, FileMode.OpenOrCreate));
+            _root!.Write(writer, null);
+            writer.Close();
 
-        return true;
+            return true;
+        }
+        catch (Exception e)
+        {
+            Logger.Fatal("Write shortcut to Steam library error!", e);
+
+            return false;
+        }
     }
 
     private bool AddExecutable(string? path, string? name)
@@ -114,7 +123,7 @@ public class SteamShortcut(ILogger logger, SteamUserDialog userDialog)
         ShortcutEntry? entry = null;
 
         if (ShortcutRoot != null)
-            for (var i = 0; i < ShortcutRoot.GetSize(); i++)
+            for (int i = 0; i < ShortcutRoot.GetSize(); i++)
             {
                 var existingEntry = ShortcutRoot!.GetEntry(i);
                 if (existingEntry?.AppName != name)
@@ -172,10 +181,10 @@ public class SteamShortcut(ILogger logger, SteamUserDialog userDialog)
         var users = new List<SteamUser>();
         foreach (var dir in directories)
         {
-            var localConfigPath = Path.Combine(dir.FullName, "config", "localconfig.vdf");
+            string localConfigPath = Path.Combine(dir.FullName, "config", "localconfig.vdf");
             if (File.Exists(localConfigPath))
             {
-                var username = GetUsernameFromLocalConfig(localConfigPath);
+                string? username = GetUsernameFromLocalConfig(localConfigPath);
                 users.Add(new SteamUser(int.Parse(dir.Name), username));
 
                 return users;
@@ -191,8 +200,8 @@ public class SteamShortcut(ILogger logger, SteamUserDialog userDialog)
     {
         try
         {
-            var lines = File.ReadAllLines(localConfigPath);
-            foreach (var line in lines)
+            string[] lines = File.ReadAllLines(localConfigPath);
+            foreach (string line in lines)
             {
                 if (!line.Contains("PersonaName"))
                 {

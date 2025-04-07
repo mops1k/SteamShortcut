@@ -54,4 +54,10 @@
     <data name="SteamShortcut_PathsNotInitialized" xml:space="preserve">
         <value>Не удалось найти пути Steam. Проверьте, установлен ли он у вас?</value>
     </data>
+  <data name="SteamShortcut_RestartSteamQuestion" xml:space="preserve">
+    <value>Для того, чтобы приложение появилось в библиотеке Steam необходимо перезапустить Steam. Выполнить перезапуск Steam сейчас?</value>
+  </data>
+  <data name="SteamShortcut_RestartSteamCaption" xml:space="preserve">
+    <value>Требуется перезапуск Steam</value>
+  </data>
 </root>

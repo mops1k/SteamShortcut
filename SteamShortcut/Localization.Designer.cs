@@ -114,6 +114,24 @@ namespace SteamShortcut {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Restart steam required.
+        /// </summary>
+        internal static string SteamShortcut_RestartSteamCaption {
+            get {
+                return ResourceManager.GetString("SteamShortcut_RestartSteamCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to In order for the application to appear in the Steam library, you must restart Steam. Restart Steam now?.
+        /// </summary>
+        internal static string SteamShortcut_RestartSteamQuestion {
+            get {
+                return ResourceManager.GetString("SteamShortcut_RestartSteamQuestion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Select Steam user.
         /// </summary>
         internal static string SteamUserDialog_Show_Select_Steam_user {

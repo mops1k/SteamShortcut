@@ -54,4 +54,10 @@
     <data name="SteamShortcut_PathsNotInitialized" xml:space="preserve">
         <value>Can't find steam paths. Is Steam installed?</value>
     </data>
+  <data name="SteamShortcut_RestartSteamQuestion" xml:space="preserve">
+    <value>In order for the application to appear in the Steam library, you must restart Steam. Restart Steam now?</value>
+  </data>
+  <data name="SteamShortcut_RestartSteamCaption" xml:space="preserve">
+    <value>Restart steam required</value>
+  </data>
 </root>
