@@ -20,24 +20,25 @@ jobs:
           dotnet-version: ${{ env.DOTNET_VERSION }}
       - name: Install dependencies
         run: dotnet restore
-      - name: Set valid RELEASE_VERSION
+      - name: Set initial RELEASE_VERSION
         shell: bash
         run: |
-          # Получаем базовую версию из файла (с очисткой)
-          majorVer=$(cat VERSION | sed 's/[^0-9.]//g' | awk -F. '{print $1"."$2}')
+          # Если файл VERSION содержит "0.1" (без лишних пробелов)
+          majorMinor=$(cat VERSION | tr -d '[:space:]')
 
-          # Ищем последний тег и инкрементим патч-версию
-          lastVer=$(git tag --sort=-v:refname --list "$majorVer.*" | head -n1 || echo "")
-
-          if [[ -n "$lastVer" ]]; then
-            IFS='.' read -ra parts <<< "$lastVer"
-            nextPatch=$((parts[2] + 1))
-            nextVer="${parts[0]}.${parts[1]}.$nextPatch"
+          if [ -z "$(git tag --list)" ]; then
+            nextVer="${majorMinor}.0"
           else
-            nextVer="${majorVer}.0"
+            lastVer=$(git tag --sort=-v:refname --list "${majorMinor}.*" | head -n1)
+            if [ -z "$lastVer" ]; then
+              nextVer="${majorMinor}.0"
+            else
+              IFS='.' read -ra parts <<< "$lastVer"
+              nextPatch=$((parts[2] + 1))
+              nextVer="${parts[0]}.${parts[1]}.$nextPatch"
+            fi
           fi
 
-          # Проверяем валидность версии
           if [[ ! "$nextVer" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
             echo "::error::Invalid version format: $nextVer"
             exit 1
