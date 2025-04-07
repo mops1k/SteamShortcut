@@ -41,6 +41,15 @@ jobs:
 
           echo "RELEASE_VERSION=$nextVer" >> $GITHUB_ENV
           echo "Using version: \"$nextVer\""
+      - name: Validate variables
+        shell: bash
+        run: |
+          echo "RELEASE_VERSION: ${{ env.RELEASE_VERSION }}"
+          echo "RELEASE_NAME: ${{ env.RELEASE_NAME }}"
+          if [ -z "${{ env.RELEASE_VERSION }}" ]; then
+            echo "::error::RELEASE_VERSION is empty"
+            exit 1
+          fi
       - name: Build Release
         shell: pwsh
         run: |
