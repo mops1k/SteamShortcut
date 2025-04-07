@@ -26,11 +26,11 @@ jobs:
           majorMinor=$(cat VERSION | tr -d '[:space:]')
 
           if [ -z "$(git tag --list)" ]; then
-            nextVer="${majorMinor}.0"
+            nextVer="${majorMinor}.1"
           else
             lastVer=$(git tag --sort=-v:refname --list "${majorMinor}.*" | head -n1)
             if [ -z "$lastVer" ]; then
-              nextVer="${majorMinor}.0"
+              nextVer="${majorMinor}.1"
             else
               IFS='.' read -ra parts <<< "$lastVer"
               nextPatch=$((parts[2] + 1))
