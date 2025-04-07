@@ -4,6 +4,7 @@
     <OutputType>WinExe</OutputType>
     <TargetFramework>net9.0-windows</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
+    <UseWindowsForms>true</UseWindowsForms>
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
@@ -11,6 +12,21 @@
     <ProjectReference Include="..\Logger\Logger.csproj" />
     <ProjectReference Include="..\VDFMapper\VDFMapper.csproj" />
     <ProjectReference Include="..\WindowsContextMenu\WindowsContextMenu.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Resources\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Update="**\*.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>$([System.String]::Copy('%(FileName)').Replace('.Designer', '.resx'))</DependentUpon>
+    </Compile>
+    <EmbeddedResource Update="**\*.resx">
+      <Generator>PublicResXFileCodeGenerator</Generator>
+      <LastGenOutput>$([System.String]::Copy('%(FileName)')).Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
 
 </Project>

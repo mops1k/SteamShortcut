@@ -1,4 +1,5 @@
 ﻿using Logger;
+using System.Windows.Forms;
 
 namespace SteamShortcut
 {
@@ -12,6 +13,9 @@ namespace SteamShortcut
 
             if (args.Length < 1)
             {
+                Application.EnableVisualStyles();
+                Application.SetCompatibleTextRenderingDefault(false);
+
                 if (!ShortcutContextMenu.IsExists()) {
                     // @todo ask question to add
                     Console.WriteLine("Does not exists");
