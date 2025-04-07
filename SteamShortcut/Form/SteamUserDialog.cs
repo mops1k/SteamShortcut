@@ -7,10 +7,10 @@ public class SteamUserDialog
 {
     public SteamUser? Show(List<SteamUser>? users)
     {
-        var form = new BaseForm();
-        var label = new Label();
-        var comboBox = new ComboBox();
-        var buttonOk = new Button();
+        BaseForm form = new();
+        Label label = new();
+        ComboBox comboBox = new();
+        Button buttonOk = new();
         form.Text = Localization.SteamUserDialog_Show_Select_Steam_user;
         form.FormBorderStyle = FormBorderStyle.FixedDialog;
         form.StartPosition = FormStartPosition.CenterScreen;

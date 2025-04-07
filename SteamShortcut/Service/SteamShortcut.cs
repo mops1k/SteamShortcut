@@ -9,9 +9,9 @@ namespace SteamShortcut.Service;
 
 public class SteamShortcut(ILogger logger, SteamUserDialog userDialog)
 {
-    private ILogger Logger => logger;
-    private string _vdfPath = "";
     private VDFMap? _root;
+    private string _vdfPath = "";
+    private ILogger Logger => logger;
     private ShortcutRoot? ShortcutRoot { get; set; }
 
     public bool InitialisePaths()
@@ -25,7 +25,7 @@ public class SteamShortcut(ILogger logger, SteamUserDialog userDialog)
         int? userId = SteamShortcutPath.GetUserId();
         if (SteamShortcutPath.GetUserId() == null)
         {
-            var users = GetUsers(path);
+            List<SteamUser>? users = GetUsers(path);
             if (users is { Count: 1 })
             {
                 userId = users.First().Id;
@@ -33,7 +33,7 @@ public class SteamShortcut(ILogger logger, SteamUserDialog userDialog)
 
             if (userId == null)
             {
-                var steamUser = userDialog.Show(GetUsers(path));
+                SteamUser? steamUser = userDialog.Show(GetUsers(path));
                 if (steamUser == null)
                 {
                     return false;
@@ -88,7 +88,7 @@ public class SteamShortcut(ILogger logger, SteamUserDialog userDialog)
             return false;
         }
 
-        var stream = new VDFStream(_vdfPath);
+        VDFStream stream = new(_vdfPath);
         _root = new VDFMap(stream);
         ShortcutRoot = new ShortcutRoot(_root);
         stream.Close();
@@ -101,7 +101,7 @@ public class SteamShortcut(ILogger logger, SteamUserDialog userDialog)
         try
         {
             File.WriteAllText(_vdfPath, "");
-            var writer = new BinaryWriter(new FileStream(_vdfPath, FileMode.OpenOrCreate));
+            BinaryWriter writer = new(new FileStream(_vdfPath, FileMode.OpenOrCreate));
             _root!.Write(writer, null);
             writer.Close();
 
@@ -118,14 +118,17 @@ public class SteamShortcut(ILogger logger, SteamUserDialog userDialog)
     private bool AddExecutable(string? path, string? name)
     {
         if (!File.Exists(path))
+        {
             return false;
+        }
 
         ShortcutEntry? entry = null;
 
         if (ShortcutRoot != null)
+        {
             for (int i = 0; i < ShortcutRoot.GetSize(); i++)
             {
-                var existingEntry = ShortcutRoot!.GetEntry(i);
+                ShortcutEntry? existingEntry = ShortcutRoot!.GetEntry(i);
                 if (existingEntry?.AppName != name)
                 {
                     continue;
@@ -135,6 +138,7 @@ public class SteamShortcut(ILogger logger, SteamUserDialog userDialog)
 
                 break;
             }
+        }
 
         if (entry != null)
         {
@@ -172,14 +176,14 @@ public class SteamShortcut(ILogger logger, SteamUserDialog userDialog)
 
     private static List<SteamUser>? GetUsers(string path)
     {
-        var directories = new DirectoryInfo(path).GetDirectories().ToList();
+        List<DirectoryInfo> directories = new DirectoryInfo(path).GetDirectories().ToList();
         if (directories.Count == 0)
         {
             return null;
         }
 
-        var users = new List<SteamUser>();
-        foreach (var dir in directories)
+        List<SteamUser> users = new();
+        foreach (DirectoryInfo dir in directories)
         {
             string localConfigPath = Path.Combine(dir.FullName, "config", "localconfig.vdf");
             if (File.Exists(localConfigPath))

@@ -1,13 +1,12 @@
-using System.Reflection;
 using Logger;
 
 namespace SteamShortcut.Service;
 
 public class ShortcutContextMenu(ILogger? logger = null)
 {
+    private readonly string _menuName = Localization.ContextMenu_Name;
     private ILogger _logger => logger ?? new Logger.Logger("SteamShortcut", "SteamShortcut");
     private WindowsContextMenu.WindowsContextMenu WinContextMenu => new(_logger);
-    private readonly string _menuName = Localization.ContextMenu_Name;
 
     private string? ExeFullPath
     {
@@ -19,10 +18,7 @@ public class ShortcutContextMenu(ILogger? logger = null)
         }
     }
 
-    public bool IsExists()
-    {
-        return WinContextMenu.IsContextMenuExists("exefile", _menuName);
-    }
+    public bool IsExists() => WinContextMenu.IsContextMenuExists("exefile", _menuName);
 
     public void Add()
     {
@@ -39,8 +35,5 @@ public class ShortcutContextMenu(ILogger? logger = null)
         WinContextMenu.AddContextMenu("exefile", _menuName, $"{ExeFullPath} \"%1\"", $"\"{ExeFullPath}\",0");
     }
 
-    public void Remove()
-    {
-        WinContextMenu.RemoveContextMenu("exefile", _menuName);
-    }
+    public void Remove() => WinContextMenu.RemoveContextMenu("exefile", _menuName);
 }

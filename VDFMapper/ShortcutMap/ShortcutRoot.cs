@@ -1,34 +1,26 @@
 ﻿using VDFMapper.VDF;
 
-namespace VDFMapper.ShortcutMap
+namespace VDFMapper.ShortcutMap;
+
+public class ShortcutRoot
 {
-    public class ShortcutRoot
+    public ShortcutRoot(VDFMap root) => this.root = root;
+
+    public VDFMap root { get; }
+    private VDFMap GetShortcutMap() => root.GetValue("shortcuts").ToMap();
+
+    public int GetSize() => GetShortcutMap().GetSize();
+
+    public ShortcutEntry? GetEntry(int entry) => new(GetShortcutMap().ToMap().GetValue(entry.ToString()).ToMap());
+
+    public ShortcutEntry? AddEntry()
     {
-        public VDFMap root { get; private set; }
-        private VDFMap GetShortcutMap() => root.GetValue("shortcuts").ToMap();
+        VDFMap entry = new();
+        entry.FillWithDefaultShortcutEntry();
 
-        public ShortcutRoot(VDFMap root)
-        {
-            this.root = root;
-        }
-
-        public int GetSize() => GetShortcutMap().GetSize();
-
-        public ShortcutEntry? GetEntry(int entry) =>
-            new ShortcutEntry(GetShortcutMap().ToMap().GetValue(entry.ToString()).ToMap());
-
-        public ShortcutEntry? AddEntry()
-        {
-            VDFMap entry = new VDFMap();
-            entry.FillWithDefaultShortcutEntry();
-
-            GetShortcutMap().Map.Add(GetSize().ToString(), entry);
-            return new ShortcutEntry(entry);
-        }
-
-        public void RemoveEntry(int idx)
-        {
-            GetShortcutMap().RemoveFromArray(idx);
-        }
+        GetShortcutMap().Map.Add(GetSize().ToString(), entry);
+        return new ShortcutEntry(entry);
     }
+
+    public void RemoveEntry(int idx) => GetShortcutMap().RemoveFromArray(idx);
 }

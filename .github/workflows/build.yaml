@@ -23,22 +23,35 @@ jobs:
       - name: Set RELEASE_VERSION
         shell: bash
         run: |
-          majorVer=$(cat VERSION)
-          lastVer=$(git tag --sort version:refname --list "$majorVer.*" | tail -n1)
+          majorVer=$(cat VERSION | tr -d '[:space:]')  # Удаляем все пробелы из VERSION
+          lastVer=$(git tag --sort version:refname --list "$majorVer.*" | tail -n1 | xargs)  # xargs для trim
+
           if [[ -n "$lastVer" ]]; then
-            newVer=(${lastVer//./ })
-            newVer[-1]="$((${newVer[-1]}+1))"
-            nextVer="${newVer[*]}"
-            nextVer="${nextVer// /.}"
+            IFS='.' read -ra verParts <<< "$lastVer"
+            newPatch=$((verParts[2] + 1))
+            nextVer="${verParts[0]}.${verParts[1]}.$newPatch"
           else
-            nextVer="$majorVer.0"
+            nextVer="${majorVer}.0"
           fi
-          nextVer=$(echo -e "${nextVer}" | sed -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//')
+
+          # Финалная очистка версии
+          nextVer=$(echo "$nextVer" | tr -d '[:space:]')
           echo "MajorVer=$majorVer LastVer=$lastVer NextVer=$nextVer"
-          echo "RELEASE_VERSION=$nextVer" >> $GITHUB_ENV
+          echo "RELEASE_VERSION=${nextVer}" >> $GITHUB_ENV
       - name: Build Single File Release
-        run: dotnet publish ${{ env.RELEASE_NAME }}/${{ env.RELEASE_NAME }}.csproj -p:PublishSingleFile=true --self-contained false --output "${{ env.RELEASE_NAME }}-${{ env.RELEASE_VERSION }}/" "/p:AssemblyVersion=${{ env.RELEASE_VERSION }}" "/p:Version=${{ env.RELEASE_VERSION }}" "/p:VersionSuffix=" "/p:ExtraDefineConstants=PRODUCTION_BUILD" -p:DebugType=None -p:DebugSymbols=false
-#        run: dotnet build --configuration Release --output "${{ env.RELEASE_NAME }}-${{ env.RELEASE_VERSION }}/" "/p:AssemblyVersion=${{ env.RELEASE_VERSION }}" "/p:Version=${{ env.RELEASE_VERSION }}" "/p:VersionSuffix=" "/p:ExtraDefineConstants=PRODUCTION_BUILD"
+        run: |
+          # Проверка версии перед использованием
+          RELEASE_VERSION=$(echo "${{ env.RELEASE_VERSION }}" | tr -d '[:space:]')
+          dotnet publish ${{ env.RELEASE_NAME }}/${{ env.RELEASE_NAME }}.csproj \
+            -p:PublishSingleFile=true \
+            --self-contained false \
+            --output "${{ env.RELEASE_NAME }}-${RELEASE_VERSION}/" \
+            "/p:AssemblyVersion=${RELEASE_VERSION}" \
+            "/p:Version=${RELEASE_VERSION}" \
+            "/p:VersionSuffix=" \
+            "/p:ExtraDefineConstants=PRODUCTION_BUILD" \
+            -p:DebugType=None \
+            -p:DebugSymbols=false
       - name: Test
         run: dotnet test --no-restore --verbosity normal
       - uses: vimtor/action-zip@v1

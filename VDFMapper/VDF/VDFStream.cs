@@ -1,39 +1,33 @@
 ﻿using System.Text;
 
-namespace VDFMapper.VDF
+namespace VDFMapper.VDF;
+
+public class VDFStream
 {
-    public class VDFStream
+    private readonly BinaryReader reader;
+
+    public VDFStream(string path) => reader = new BinaryReader(new FileStream(path, FileMode.Open));
+
+    public void Close() => reader.Close();
+
+    public string? ReadString()
     {
-        private BinaryReader reader;
-
-        public VDFStream(string path)
+        List<byte> text = new();
+        while (true)
         {
-            reader = new BinaryReader(new FileStream(path, FileMode.Open));
-        }
-
-        public void Close() => reader.Close();
-
-        public string? ReadString()
-        {
-            List<byte> text = new();
-            while (true)
+            byte c = ReadByte();
+            if (c == 0)
             {
-                byte c = ReadByte();
-                if (c == 0) break;
-                text.Add(c);
+                break;
             }
 
-            return Encoding.UTF8.GetString(text.ToArray());
+            text.Add(c);
         }
 
-        public uint ReadInteger()
-        {
-            return reader.ReadUInt32();
-        }
-
-        public byte ReadByte()
-        {
-            return reader.ReadByte();
-        }
+        return Encoding.UTF8.GetString(text.ToArray());
     }
+
+    public uint ReadInteger() => reader.ReadUInt32();
+
+    public byte ReadByte() => reader.ReadByte();
 }
