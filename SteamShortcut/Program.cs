@@ -18,7 +18,13 @@ namespace SteamShortcut
 
                 if (!ShortcutContextMenu.IsExists()) {
                     // @todo ask question to add
-                    Console.WriteLine("Does not exists");
+                    var result = MessageBox.Show("Add Windows context menu item to executable files?", "Confirm", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                    if (result == DialogResult.Yes) {
+                        Console.WriteLine("Install");
+
+                        return;
+                    }
+                    Console.WriteLine("Nope");
                 }
                 return;
             }
