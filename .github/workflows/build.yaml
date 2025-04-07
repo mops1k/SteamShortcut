@@ -53,14 +53,15 @@ jobs:
       - name: Build Release
         shell: pwsh
         run: |
+          $version = "${{ env.RELEASE_VERSION }}".Trim()
           dotnet publish SteamShortcut/SteamShortcut.csproj `
             -c Release `
             -p:PublishSingleFile=true `
             --self-contained false `
-            --output "${{ env.RELEASE_NAME }}-${{ env.RELEASE_VERSION }}/" `
-            "/p:AssemblyVersion=${{ env.RELEASE_VERSION }}" `
-            "/p:FileVersion=${{ env.RELEASE_VERSION }}" `
-            "/p:Version=${{ env.RELEASE_VERSION }}" `
+            --output "${{ env.RELEASE_NAME }}-$version/" `
+            "/p:AssemblyVersion=$version" `
+            "/p:FileVersion=$version" `
+            "/p:Version=$version" `
             -p:DebugType=None `
             -p:DebugSymbols=false
       - name: Test
