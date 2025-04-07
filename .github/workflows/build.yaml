@@ -39,18 +39,18 @@ jobs:
           echo "MajorVer=$majorVer LastVer=$lastVer NextVer=$nextVer"
           echo "RELEASE_VERSION=${nextVer}" >> $GITHUB_ENV
       - name: Build Single File Release
+        shell: pwsh
         run: |
-          # Проверка версии перед использованием
-          RELEASE_VERSION=$(echo "${{ env.RELEASE_VERSION }}" | tr -d '[:space:]')
-          dotnet publish ${{ env.RELEASE_NAME }}/${{ env.RELEASE_NAME }}.csproj \
-            -p:PublishSingleFile=true \
-            --self-contained false \
-            --output "${{ env.RELEASE_NAME }}-${RELEASE_VERSION}/" \
-            "/p:AssemblyVersion=${RELEASE_VERSION}" \
-            "/p:Version=${RELEASE_VERSION}" \
-            "/p:VersionSuffix=" \
-            "/p:ExtraDefineConstants=PRODUCTION_BUILD" \
-            -p:DebugType=None \
+          $RELEASE_VERSION = "${{ env.RELEASE_VERSION }}".Trim()
+          dotnet publish ${{ env.RELEASE_NAME }}/${{ env.RELEASE_NAME }}.csproj `
+            -p:PublishSingleFile=true `
+            --self-contained false `
+            --output "${{ env.RELEASE_NAME }}-$RELEASE_VERSION/" `
+            "/p:AssemblyVersion=$RELEASE_VERSION" `
+            "/p:Version=$RELEASE_VERSION" `
+            "/p:VersionSuffix=" `
+            "/p:ExtraDefineConstants=PRODUCTION_BUILD" `
+            -p:DebugType=None `
             -p:DebugSymbols=false
       - name: Test
         run: dotnet test --no-restore --verbosity normal
