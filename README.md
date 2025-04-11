@@ -1,4 +1,7 @@
 ﻿## SteamShortcut
+ 
+[![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/mops1k/SteamShortcut?label=stable&style=flat-square)](https://github.com/mops1k/SteamShortcut/releases/latest)
+![GitHub all releases](https://img.shields.io/github/downloads/mops1k/SteamShortcut/total?style=flat-square)
 
 It's a simple Windows application, which adds context menu item on executable apps to add it to Steam Library
 
