@@ -20,8 +20,10 @@ It's a simple Windows application, which adds context menu item on executable ap
 6. If steam running it will ask you to restart it (you can restart it later manually just pressing "Cancel")
 7. If steam not running, and you have more than one steam user it asks you to which user library select to add shortcut. In next steam running you will see application in library.
 
-## Developer
-Aleksandr "mops1k" Kvintilyanov, 2025
+## Authors
+- Aleksandr "mops1k" Kvintilyanov, 2025
+
+SteamShortcut is not affiliated with Valve, Steam, or any of their partners.
 
 ## Support
 If you like the project, you can support it thru:
