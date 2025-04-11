@@ -24,5 +24,5 @@ It's a simple Windows application, which adds context menu item on executable ap
 Aleksandr "mops1k" Kvintilyanov, 2025
 
 ## Support
-If you like the project, you can support it:
-[Boosty](https://boosty.to/mops1k/donate)
+If you like the project, you can support it thru:
+- [Boosty](https://boosty.to/mops1k/donate)
